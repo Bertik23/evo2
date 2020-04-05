@@ -62,7 +62,7 @@ class Creature:
         mapa[self.x][self.y].append(baby)
     def lifeFunctions(self):
         for entity in mapa[self.x][self.y]:
-            if type(entity) in foodList:
+            if type(entity) in self.foodList:
                 self.eat(entity)
             if type(entity) == type(self) and entity != self and self.age > 30 and entity.age > 30 and self.energy > 0.5:
                 self.reproduce(entity)
