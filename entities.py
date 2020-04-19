@@ -2,7 +2,7 @@ import math
 from random import choice, uniform, random, randint
 
 class Creature:
-    def __init__(self, x, y, rotation, speed, moveEnergyCost, strength, viewDistance, viewAngle, foodList, enemyList, mutationChance, mutation, mapa, energy = 1):
+    def __init__(self, x, y, rotation, speed, moveEnergyCost, strength, viewDistance, viewAngle, foodList, enemyList, mutationChance, mutation, energy = 1):
         self.x = x
         self.y = y
         self.rotation = rotation
@@ -17,24 +17,22 @@ class Creature:
         self.mutation = mutation #what is the range of the mutation
         self.energy = energy #energy <0;1>
         self.age = 0
-        self.mapa = mapa
-        print(self.mapa)
     def move(self,distance, direction): #direction ↑ = 0, → = 0.5Pi
-        self.mapa[self.x][self.y].remove(self)
+        mapa[self.x][self.y].remove(self)
         if distance > self.speed:
             distance = self.speed
         self.rotation = direction
         self.x += int(math.sin(direction) * distance)
         self.y += int(math.cos(direction) * distance)
         self.energy -= distance * self.moveEnergyCost
-        self.mapa[self.x][self.y].append(self)
+        mapa[self.x][self.y].append(self)
     def eat(self, food):
         if type(food) in self.foodList:
             if food.strength >= self.strength:
                 self.energy -= self.strength / food.strength
             else:
                 self.energy += food.energy * (self.strength / food.strength)
-                self.mapa[self.x][self.y].remove(food)
+                mapa[self.x][self.y].remove(food)
     def reproduce(self, second):
         self.energy -= 0.3
         baby = type(self)(self.x, self.y, uniform(0, 2 * math.pi),
@@ -60,29 +58,28 @@ class Creature:
             baby.mutationChance *= 1 + uniform(-baby.mutation, baby.mutation)
         if baby.mutationChance <= random():
             baby.mutation *= 1 + uniform(-baby.mutation, baby.mutation)
-        self.mapa[self.x][self.y].append(baby)
+        mapa[self.x][self.y].append(baby)
     def lifeFunctions(self):
-        for entity in self.mapa[self.x][self.y]:
+        for entity in mapa[self.x][self.y]:
             if type(entity) in self.foodList:
                 self.eat(entity)
             if type(entity) == type(self) and entity != self and self.age > 30 and entity.age > 30 and self.energy > 0.5:
                 self.reproduce(entity)
         if self.energy <= 0:
-            self.mapa[self.x][self.y].remove(self)
+            mapa[self.x][self.y].remove(self)
 
 class Plant:
-    def __init__(self, x, y, fruit, spawnRange, spawnInterval, mapa):
+    def __init__(self, x, y, fruit, spawnRange, spawnInterval):
         self.x = x
         self.y = y
         self.fruit = fruit
         self.spawnRange = spawnRange
         self.spawnInterval = spawnInterval
         self.spawnCountdown = spawnInterval
-        self.mapa = mapa
     def spawn(self):
         x = self.x + randint(-spawnRange, spawnRange)
         y = self.y + randint(-spawnRange, spawnRange)
-        self.mapa[x][y].append(self.fruit(x,y))
+        mapa[x][y].append(self.fruit(x,y))
     def lifeFunctions(self):
         self.spawnCountdown -= 1
         if self.spawnCountdown <= 0:
@@ -90,11 +87,12 @@ class Plant:
             self.spawnCountdown = self.spawnInterval
 
 class Fruit:
-    def __init__(self, x, y, mapa, strength = 1, energy = 1,):
+    def __init__(self, x, y, strength = 1, energy = 1,):
         self.x = x
         self.y = y
         self.strength = strength
         self.energy = energy
-        self.mapa = mapa
     def lifeFunctions(self):
         pass
+
+mapa = []
