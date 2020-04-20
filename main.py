@@ -3,7 +3,7 @@ from random import randint, random, uniform
 import math
 import pprint
 
-mapaSize = (50,50)
+mapaSize = (10,10)
 
 class Predator(Creature):
     def __init__(self, x, y, rotation):
@@ -54,8 +54,8 @@ def run():
             for k in j:
                 k.lifeFunctions()
                 if type(k) in [Predator,Herbivore]:
-                    k.moveing()
                     print(f"{a},{b} Moveing {k} on {k.x},{k.y}")
+                    k.moveing()
             b += 1
         a += 1
 
@@ -66,10 +66,13 @@ for x in range(mapaSize[0]):
         a = random()
         if a <= 0.1:
             mapa[x][y].append(Predator(x,y,uniform(0, 2*math.pi)))
+            print(f"{x},{y} : {mapa[x][y][0]} on {mapa[x][y][0].x},{mapa[x][y][0].y}")
         elif a <= 0.2:
             mapa[x][y].append(Herbivore(x,y,uniform(0, 2*math.pi)))
+            print(f"{x},{y} : {mapa[x][y][0]} on {mapa[x][y][0].x},{mapa[x][y][0].y}")
         elif a <= 0.3:
             mapa[x][y].append(AppleTree(x,y))
+            #print(f"{x},{y} : {mapa[x][y][0]} on {mapa[x][y][0].x},{mapa[x][y][0].y}")
 
 for i in range(10):
     pmap()
